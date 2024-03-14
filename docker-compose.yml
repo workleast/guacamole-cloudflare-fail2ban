@@ -1,0 +1,52 @@
+version: '3'
+
+# networks
+# create a network 'guacnetwork_compose' in mode 'bridged'
+networks:
+  default:
+    driver: bridge
+
+# services
+services:
+# guacamole
+  guacamole:
+    container_name: guacamole_all
+    image: jwetzell/guacamole
+    volumes:
+    - "./guacamole-config:/config"
+    - "/var/log/guacamole:/usr/local/tomcat/logs"
+    env_file:
+    - "./guacamole.env"
+    networks:
+    - default
+    ports:
+    - 8080:8080/tcp
+    restart: always
+  # fail2ban
+  fail2ban:
+    image: crazymax/fail2ban:latest
+    container_name: fail2ban
+    network_mode: "host"
+    cap_add:
+    - NET_ADMIN
+    - NET_RAW
+    volumes:
+    - "./fail2ban-data:/data"
+    - "/var/log:/var/log:ro"
+    env_file:
+    - "./fail2ban.env"
+    restart: always
+  # cloudflare tunnel
+  cloudflare-tunnel:
+    image: cloudflare/cloudflared
+    container_name: cloudflare_tunnel
+    hostname: cloudflare_tunnel
+    restart: unless-stopped
+    networks:
+    - default
+    command: tunnel run
+    volumes:
+      - "./cloudflare-config/hosts:/etc/hosts"
+    env_file:
+    - "./cloudflare.env"
+    
