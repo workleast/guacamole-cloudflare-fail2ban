@@ -1,0 +1,20 @@
+<configuration>
+  <!-- Appender for debugging -->
+  <appender name="GUAC-DEBUG" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+  <!-- Appender for debugging in a file-->
+  <appender name="GUAC-DEBUG_FILE" class="ch.qos.logback.core.FileAppender">
+    <file>/usr/local/tomcat/logs/guacd.log</file>
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+  <!-- Log at DEBUG level -->
+  <root level="debug">
+    <appender-ref ref="GUAC-DEBUG"/>
+    <appender-ref ref="GUAC-DEBUG_FILE"/>
+  </root>
+</configuration>
